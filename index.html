@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <title>K-Pop Tycoon v15.5 — Deep Systems</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+</head>
+
+
+<!-- 1. INTRO -->
+
+<div id="intro-screen" class="screen active neo-bg-pattern">
+    <div class="intro-box neo-card">
+        <div class="sparkle-icon">👑</div>
+        <h1 class="intro-title">IDOL EMPIRE</h1>
+        <p class="intro-subtitle">K-Pop Simulator v15.5 (Deep Systems Update)</p>
+        <p style="font-size:0.8rem; margin-top:10px; font-weight:700; color:var(--c-red-solid);">Peringatan: Industri ini tidak mudah. Grup Nugu butuh proses untuk masuk chart Melon.</p>
+        <p style="font-size:0.75rem; margin-top:6px; font-weight:700; color:var(--c-blue-solid);">v15.5 DEEP UPDATE: Training Assign | Eval Grading | Chart Delta ⬆️⬇️ | Editorial Playlist | Burn Rate | Cash Runway | Loan Interest | Event Aftermath | Mid-Year Awards | Staff Morale | Bond Levels | Bonding Activity | Scandal PR | Sentiment Bar | Trending # | Fancam | Concert Review | 12 Tipe Agensi | 50+ Background | 30+ Trait | 11 Stat | Expanded Scouting | 80+ Rival Names | 100+ Song Words | Agency Detail | Diverse Rival Ecosystem</p>
+        <button id="btn-start-intro" class="neo-btn primary-btn mt-4" style="display: none; font-size: 1.2rem; padding: 15px 30px;">MULAI SIMULASI</button>
+    </div>
+</div>
+
+<!-- 2. SETUP -->
+
+<div id="setup-screen" class="screen neo-bg-pattern">
+    <div class="setup-box neo-card">
+        <h2 class="section-title">✨ Desain Agensi</h2>
+        <div class="input-group">
+            <label>Nama Direktur (CEO):</label>
+            <input type="text" id="input-ceo" class="neo-input" placeholder="Cth: Min Hee-jin" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Nama Agensi:</label>
+            <input type="text" id="input-agency" class="neo-input" placeholder="Cth: ADOR" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Tipe Agensi:</label>
+            <select id="input-agency-type" class="neo-input">
+                <option value="standard">🏢 Standar (Modal 500Jt, Seimbang, Cocok Pemula)</option>
+                <option value="chaebol">💎 Chaebol (Modal 2M, Reputasi Besar, Tekanan Investor)</option>
+                <option value="indie">🎸 Indie (Modal 100Jt, Trainee Dewa, Chart Susah)</option>
+                <option value="global">🌍 Global Label (Modal 1.5M, Pasar Internasional)</option>
+                <option value="survival">🔥 Survival Factory (Modal 800Jt, Fandom Awal Kuat)</option>
+                <option value="digital">📱 Digital-First (Modal 400Jt, Viral Marketing)</option>
+                <option value="hiphop">🎤 Hip-Hop Label (Modal 350Jt, Underground Scene)</option>
+                <option value="actor_idol">🎭 Actor-Idol (Modal 700Jt, Drama Revenue)</option>
+                <option value="jpop_crossover">🇯🇵 J-Pop Crossover (Modal 900Jt, Japan Direct)</option>
+                <option value="ai_tech">🤖 AI/Tech Label (Modal 600Jt, Metaverse)</option>
+                <option value="classical">🎻 Classical Prestige (Modal 450Jt, Vocal King)</option>
+                <option value="idol_school">🏫 Idol Academy (Modal 600Jt, Evaluasi Ketat)</option>
+            </select>
+        </div>
+        <button id="btn-create-agency" class="neo-btn success-btn w-100 mt-4">DIRIKAN AGENSI</button>
+    </div>
+</div>
+
+<!-- 3. MAIN APP -->
+
+<div id="main-app" class="screen app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar neo-panel">
+        <div class="sidebar-header neo-card-small">
+            <h1 class="logo" id="display-agency-name">Agensi</h1>
+            <div class="ceo-badge neo-tag mt-2">CEO <span id="display-ceo-name"></span></div>
+        </div>
+        <div class="time-board neo-card-small">
+            <div class="time-main">Y<span id="val-year">1</span> : M<span id="val-month">1</span></div>
+            <div class="time-sub" style="font-weight:700;">Week <span id="val-week">1</span></div>
+            <button id="btn-skip-week" class="neo-btn action-btn w-100 mt-2">⏩ NEXT WEEK</button>
+        </div>
+        <ul class="menu">
+            <li class="menu-item active" data-target="dashboard"><span class="icon">📈</span> Dashboard</li>
+            <li class="menu-item" data-target="trainee"><span class="icon">🏃</span> Trainee</li>
+            <li class="menu-item" data-target="dorm"><span class="icon">🏠</span> Asrama</li>
+            <li class="menu-item" data-target="artist"><span class="icon">✨</span> Artis & Grup</li>
+            <li class="menu-item" data-target="chart"><span class="icon">🏆</span> Music Charts</li>
+            <li class="menu-item" data-target="database"><span class="icon">🗂️</span> Database Idol</li>
+            <li class="menu-item" data-target="social"><span class="icon">📱</span> Sosmed & K-Netz</li>
+            <li class="menu-item" data-target="staff"><span class="icon">🏢</span> Fasilitas & Staff</li>
+            <li class="menu-item" data-target="finance"><span class="icon">💸</span> Keuangan</li>
+            <li class="menu-item" data-target="awards"><span class="icon">🏆</span> Award Shows</li>
+            <li class="menu-item" data-target="subunit"><span class="icon">🎭</span> Sub-Unit & Solo</li>
+            <li class="menu-item" data-target="variety"><span class="icon">📺</span> Variety Show</li>
+            <li class="menu-item" data-target="collab"><span class="icon">🤝</span> Kolaborasi</li>
+            <li class="menu-item" data-target="international"><span class="icon">🌏</span> Pasar Global</li>
+        </ul>
+    </nav>
+
+<!-- Content -->
+
+<main class="content">
+    <!-- BREAKING NEWS TICKER -->
+    <div id="news-ticker-bar">
+        <div class="ticker-label">🔴 BREAKING</div>
+        <div style="overflow:hidden; flex:1;">
+            <div class="ticker-track" id="ticker-track"></div>
+        </div>
+    </div>
+    <header class="top-status-bar neo-panel">
+        <div class="status-item neo-tag tag-money"><span>💸 Kas:</span> <span id="val-money">₩ 0</span></div>
+        <div class="status-item neo-tag tag-rep"><span>💎 Reputasi:</span> <span id="val-rep">0</span></div>
+        <div class="status-item neo-tag" id="cash-runway-tag" style="display:none;background:var(--c-red);font-weight:900;"><span>⏱️</span> <span id="val-runway-top">∞</span></div>
+    </header>
+
+<!-- TAB: DASHBOARD -->
+<div id="dashboard" class="tab-content active">
+    <h2 class="page-title neo-text-shadow">Dashboard Utama</h2>
+    <div class="clickable-stats-grid">
+        <div class="neo-stat-card bg-yellow clickable" onclick="openDashboardDetail('trainee')"><h3>Trainee Aktif</h3><p id="dash-total-trainee" class="stat-number">0</p><small>(Klik Detail)</small></div>
+        <div class="neo-stat-card bg-pink clickable" onclick="openDashboardDetail('group')"><h3>Artis Debut</h3><p id="dash-total-group" class="stat-number">0</p><small>(Klik Detail)</small></div>
+        <div class="neo-stat-card bg-orange clickable" onclick="openDashboardDetail('predebut')"><h3>Grup Pre-Debut</h3><p id="dash-total-pre" class="stat-number">0</p><small>(Klik Detail)</small></div>
+        <div class="neo-stat-card bg-green clickable" onclick="openDashboardDetail('rank')"><h3>Rank Agensi</h3><p id="dash-rank" class="stat-number text-sm" style="font-size: 1.5rem;">Nugu</p><small>(Butuh 5000 Rep untuk Top Tier)</small></div>
+    </div>
+    <div id="active-situations-panel" class="neo-card bg-orange mt-4" style="display:none;">
+        <h3 class="section-title" style="margin:0 0 10px;">⚡ Active Situations</h3>
+        <div id="active-situations-list" style="font-size:0.85rem;max-height:150px;overflow-y:auto;"></div>
+    </div>
+    <div id="burn-rate-panel" class="neo-card-small bg-pink mt-2" style="display:none;">
+        <div style="display:flex;justify-content:space-between;font-weight:700;">
+            <span>🔥 Weekly Burn Rate:</span><span id="val-burn-rate">₩0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:#666;">
+            <span>Cash Runway:</span><span id="val-cash-runway" style="font-weight:900;">∞ minggu</span>
+        </div>
+    </div>
+    <h3 class="section-title mt-4">📋 Log Aktivitas Utama</h3>
+    <ul id="main-activity-log" class="log-list neo-card bg-main" style="max-height: 250px;"></ul>
+</div>
+
+<!-- TAB: TRAINEE -->
+<div id="trainee" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Trainee & Audisi</h2>
+        <div style="display:flex; gap:10px;">
+            <button class="neo-btn action-btn" onclick="openModal('modal-scout-idol')">🕵️ SCOUTING SPESIFIK</button>
+            <button class="neo-btn primary-btn" onclick="openModal('modal-audition-types')">📋 AUDISI</button>
+            <button class="neo-btn bg-purple" onclick="openTrainingAssignment()">📝 TRAINING</button>
+        </div>
+    </div>
+    <div id="audition-status-banner" class="neo-banner hidden">⏳ Sedang mencari bakat... (<span id="audition-timer">0</span> minggu tersisa)</div>
+    <div id="trainee-list" class="trainee-grid"></div>
+</div>
+
+<!-- TAB: ASRAMA / DORM CHEMISTRY -->
+<div id="dorm" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Asrama & Chemistry</h2>
+        <button class="neo-btn primary-btn" onclick="recalcDormChemistry()">🔄 Chemistry</button>
+        <button class="neo-btn bg-purple" onclick="openBondingActivity()">💝 BONDING</button>
+    </div>
+    <p style="font-size:0.85rem; margin-bottom:15px; color:#555;">Atur kamar tidur member. Roommate yang cocok = <b>Good Mood buff</b>. Yang bertentangan = <b>Stress naik tiap minggu!</b></p>
+    <div class="input-group"><label>Pilih Grup:</label><select id="dorm-group-select" class="neo-input" onchange="renderDormFloorplan()"></select></div>
+    <div class="dorm-floorplan" id="dorm-floorplan">
+        <!-- Rooms rendered by JS -->
+    </div>
+    <div id="dorm-chemistry-results" class="dorm-chemistry-panel" style="display:none;">
+        <h4 style="color:#fff; font-size:0.85rem; margin-bottom:8px;">💫 Chemistry Report</h4>
+        <div id="dorm-chem-list"></div>
+    </div>
+    <div class="dorm-unassigned-pool">
+        <div class="dorm-pool-label">🧳 Belum Ditugaskan (Klik member, lalu klik kasur)</div>
+        <div class="dorm-pool-members" id="dorm-pool-members"></div>
+    </div>
+</div>
+
+<!-- TAB: ARTIST -->
+<div id="artist" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Manajemen Artis</h2>
+        <button onclick="startDebut()" class="neo-btn success-btn">🚀 BENTUK GRUP BARU</button>
+    </div>
+    
+    <div class="sub-tabs">
+        <button class="sub-tab-btn active" onclick="switchArtistTab('all-groups')">📋 Semua Grup</button>
+        <button class="sub-tab-btn" onclick="switchArtistTab('manual-schedule')">🗓️ Jadwal Manual</button>
+        <button class="sub-tab-btn" onclick="switchArtistTab('release-queue')" style="position:relative;">💿 Persiapan Rilis <span id="badge-release-stall" style="display:none; background:red; color:white; border-radius:50%; width:15px; height:15px; font-size:10px; position:absolute; top:0; right:0; text-align:center;">!</span></button>
+    </div>
+
+    <div id="tab-all-groups" class="sub-tab-content active">
+        <div id="artist-list" class="trainee-grid"><p class="empty-state neo-card-small">Belum ada grup yang dibentuk.</p></div>
+    </div>
+
+    <div id="tab-manual-schedule" class="sub-tab-content">
+        <div class="neo-panel p-4" style="padding: 20px;">
+            <h3 class="mb-2">Manajemen Event Grup (Manual)</h3>
+            <p style="font-size:0.9rem; color:#555; margin-bottom: 20px;">Atur jadwal khusus. <strong>Peringatan Realistis:</strong> Memaksa grup Nugu melakukan World Tour adalah bunuh diri finansial. Bangun fandom lewat Busking & Job Kecil terlebih dahulu.</p>
+            <div id="manual-schedule-list" class="finance-grid"></div>
+        </div>
+    </div>
+
+    <div id="tab-release-queue" class="sub-tab-content">
+        <div class="neo-panel p-4" style="padding: 20px;">
+            <h3 class="mb-2">Status Persiapan Album & Tugas Produksi</h3>
+            <p style="font-size:0.9rem; color:#555; margin-bottom: 15px;">Daftar perilisan. <strong>PENTING:</strong> Waktu tidak akan maju jika Tugas Produksi belum dikerjakan!</p>
+            <div id="pending-release-list" class="finance-grid">
+                <p><i>Tidak ada persiapan rilis album saat ini.</i></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: DATABASE IDOL -->
+<div id="database" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Database Industri K-Pop</h2>
+        <div class="neo-tag bg-blue">Global Fandom Tracking</div>
+    </div>
+    <p style="font-size:0.9rem; margin-bottom:20px;">Lihat persainganmu di sini. Untuk mengalahkan grup "Legend", artismu harus memiliki statistik dan fandom yang setara agar bisa menang di Chart & Music Show.</p>
+    <div id="database-grid" class="db-grid">
+        <!-- Injected by JS -->
+    </div>
+</div>
+
+<!-- TAB: CHARTS -->
+<div id="chart" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Live Music Charts</h2>
+        <div class="neo-tag bg-yellow" style="font-size:1rem;">🏆 Top 3 Domestik masuk nominasi Music Show!</div>
+    </div>
+    <div id="chart-line-graphs" style="margin-bottom:20px;">
+        <!-- SVG Line charts rendered by JS -->
+    </div>
+    <div class="chart-tabs">
+        <button class="neo-btn chart-tab-btn active" onclick="switchChartTab('domestic')">🇰🇷 DOMESTIK</button>
+        <button class="neo-btn chart-tab-btn" onclick="switchChartTab('global')">🌍 GLOBAL & SPESIAL</button>
+    </div>
+    <div id="chart-domestic" class="chart-view active">
+        <div class="chart-columns">
+            <div class="chart-board neo-card"><h3 class="chart-title melon">🍈 Melon Top 100</h3><ul id="list-melon" class="chart-list"></ul></div>
+            <div class="chart-board neo-card"><h3 class="chart-title genie">🧞 Genie Top 100</h3><ul id="list-genie" class="chart-list"></ul></div>
+            <div class="chart-board neo-card"><h3 class="chart-title flo">🌊 Flo Realtime</h3><ul id="list-flo" class="chart-list"></ul></div>
+            <div class="chart-board neo-card"><h3 class="chart-title bugs">🐛 Bugs!</h3><ul id="list-bugs" class="chart-list"></ul></div>
+        </div>
+    </div>
+    <div id="chart-global" class="chart-view">
+        <div class="chart-columns">
+            <div class="chart-board neo-card"><h3 class="chart-title spotify">🎧 Spotify Global</h3><ul id="list-spotify" class="chart-list"></ul></div>
+            <div class="chart-board neo-card"><h3 class="chart-title ytmusic">▶️ YT Music</h3><ul id="list-ytmusic" class="chart-list"></ul></div>
+            <div class="chart-board neo-card"><h3 class="chart-title billboard">🇺🇸 Billboard Hot 100</h3><ul id="list-billboard" class="chart-list"></ul></div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: SOCIAL MEDIA -->
+<div id="social" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Sosmed & Opini Publik</h2>
+    </div>
+    
+    <div class="sub-tabs">
+        <button class="sub-tab-btn active" onclick="switchSosmedTab('feed')">📰 Live Feed (K-Netz)</button>
+        <button class="sub-tab-btn" onclick="switchSosmedTab('manage')">📱 Kelola Akun Resmi & Platform</button>
+    </div>
+
+    <div id="tab-sosmed-feed" class="sub-tab-content active">
+        <div id="trending-hashtags" class="neo-card-small bg-blue mb-2" style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 12px;">
+            <span style="font-weight:900;font-size:0.8rem;">🔥 Trending:</span>
+            <span id="trend-1" class="neo-tag bg-yellow" style="font-size:0.75rem;">#KPop</span>
+            <span id="trend-2" class="neo-tag bg-pink" style="font-size:0.75rem;">#Comeback</span>
+            <span id="trend-3" class="neo-tag bg-green" style="font-size:0.75rem;">#MusicShow</span>
+        </div>
+        <div class="sosmed-container neo-panel">
+            <div class="sosmed-header bg-blue"><h3>Trending Now (TheQoo / Pann / X)</h3></div>
+            <div id="social-feed" class="sosmed-feed"></div>
+        </div>
+    </div>
+
+    <div id="tab-sosmed-manage" class="sub-tab-content">
+        <div class="neo-panel p-4" style="padding: 20px;">
+            <h3 class="section-title">Sosmed Manager & Platform Eksklusif</h3>
+            <p style="font-size:0.9rem; margin-bottom: 20px;">Posting konten ke akun resmi untuk mengatur citra grup dan membangun fandom spesifik secara manual.</p>
+            
+            <div class="input-group"><label>Pilih Grup:</label><select id="adv-sns-artist" class="neo-input"></select></div>
+            <div class="input-group"><label>Pilih Platform:</label>
+                <select id="adv-sns-platform" class="neo-input" onchange="updateSnsOptions()">
+                    <option value="weverse">Weverse (Fokus Core Fans / Fans Setia)</option>
+                    <option value="tiktok">TikTok (Fokus Viral / Global / Publik)</option>
+                    <option value="instagram">Instagram (Fokus Visual / Reputasi Brand)</option>
+                    <option value="twitter">X / Twitter (Interaksi Cepat / Rawan Skandal)</option>
+                    <option value="bubble">Aplikasi Pesan Pribadi [Phoning/Bubble] (Berbayar)</option>
+                    <option value="youtube">YouTube (Vlog / Behind The Scenes)</option>
+                </select>
+            </div>
+            <div class="input-group"><label>Jenis Konten:</label>
+                <select id="adv-sns-content" class="neo-input">
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+            <button class="neo-btn action-btn w-100 mt-2" onclick="executeAdvancedSns()">POSTING KONTEN SEKARANG</button>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: STAFF -->
+<div id="staff" class="tab-content">
+    <h2 class="page-title neo-text-shadow">Fasilitas & Staff</h2>
+    <!-- ANTS FARM VISUALIZER -->
+    <div id="ants-farm-container">
+        <div class="ants-farm-title">🐜 AGENCY LIVE — Markas Agensi Saat Ini</div>
+        <div class="ants-farm-rooms" id="ants-farm-rooms">
+            <div class="farm-room" id="farm-room-practice"><div class="farm-room-label">🏃 Ruang Latihan</div><div class="farm-icons-row" id="farm-icons-practice"></div></div>
+            <div class="farm-room" id="farm-room-dorm"><div class="farm-room-label">💤 Asrama</div><div class="farm-icons-row" id="farm-icons-dorm"></div></div>
+            <div class="farm-room" id="farm-room-tour"><div class="farm-room-label">✈️ World Tour</div><div class="farm-icons-row" id="farm-icons-tour"></div></div>
+        </div>
+    </div>
+    <div class="facility-grid" style="margin-top:20px;">
+        <div class="neo-card facility-card">
+            <h4>Ruang Latihan (Lv.<span id="lvl-practice">1</span>)</h4><p>+Stat Trainee/Mgg</p>
+            <button class="neo-btn primary-btn mt-2 w-100" onclick="upgradeFacility('practice', 50000000)">Upgrade (₩50Jt)</button>
+        </div>
+        <div class="neo-card facility-card">
+            <h4>Studio Rekaman (Lv.<span id="lvl-studio">1</span>)</h4><p>+Skor Lagu Rilis</p>
+            <button class="neo-btn primary-btn mt-2 w-100" onclick="upgradeFacility('studio', 150000000)">Upgrade (₩150Jt)</button>
+        </div>
+        <div class="neo-card facility-card">
+            <h4>Asrama Mewah (Lv.<span id="lvl-dorm">1</span>)</h4><p>-Stress Idol Otomatis</p>
+            <button class="neo-btn bg-purple mt-2 w-100" onclick="upgradeFacility('dorm', 200000000)">Upgrade (₩200Jt)</button>
+        </div>
+        <div class="neo-card facility-card">
+            <h4>Klinik Agensi (Lv.<span id="lvl-clinic">1</span>)</h4><p>Cegah Cedera Permanen</p>
+            <button class="neo-btn success-btn mt-2 w-100" onclick="upgradeFacility('clinic', 300000000)">Upgrade (₩300Jt)</button>
+        </div>
+    </div>
+    <div class="header-with-action mt-4">
+        <h3 class="section-title m-0">👥 Pegawai Agensi</h3>
+        <button class="neo-btn action-btn" onclick="openStaffRoleSelect()">🔍 CARI STAFF (HEADHUNTER)</button>
+    </div>
+    <div id="staff-search-banner" class="neo-banner hidden bg-yellow mt-2">⏳ Headhunter sedang mencari <span id="staff-search-role-display"></span>... (<span id="staff-search-timer">0</span> minggu tersisa)</div>
+    <div id="staff-list" class="trainee-grid mt-2"></div>
+</div>
+
+<!-- TAB: FINANCE -->
+<div id="finance" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">Keuangan Global</h2>
+        <button class="neo-btn success-btn" onclick="openDetailedFinance()">📊 BUKU BESAR RINCIAN</button>
+    </div>
+    <div class="finance-grid">
+        <div class="neo-card bg-yellow">
+            <h3>📈 Saham Agensi (K-DAQ)</h3>
+            <p class="text-xl">Harga: <strong id="stock-price">₩ 5,000</strong></p>
+            <p>Dimiliki: <span id="stock-owned">100</span> Lembar</p>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="neo-btn success-btn w-100" onclick="buyStock()">BELI 10 LBR</button>
+                <button class="neo-btn danger-btn w-100" onclick="sellStock()">JUAL 10 LBR</button>
+            </div>
+        </div>
+        <div class="neo-card bg-orange">
+            <h3>🤝 Investor Eksternal (Angel)</h3>
+            <p>Suntikan Dana: <strong style="color:var(--c-green-solid)">₩ 5 Miliar</strong></p>
+            <p style="font-size:0.8rem; color:#555;">Kondisi: Potong 20% Pendapatan Selamanya</p>
+            <button class="neo-btn action-btn w-100 mt-2" id="btn-investor" onclick="takeInvestment()">TERIMA INVESTASI</button>
+        </div>
+        <div class="neo-card bg-pink">
+            <h3>🏦 Pinjaman Bank (Limit Ketat)</h3>
+            <p>Limit: <strong id="bank-limit">₩ 500M</strong></p>
+            <p class="mt-2 text-red" style="font-weight:900;">Hutang: <strong id="loan-amount">₩ 0</strong></p>
+            <p style="font-size:0.8rem;">Tenggat: <span id="loan-deadline" style="font-weight:700;">Tidak ada</span></p>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="neo-btn action-btn w-100" onclick="takeLoan()">PINJAM 100JT</button>
+                <button class="neo-btn primary-btn w-100" onclick="payLoan()">BAYAR 100JT</button>
+            </div>
+        </div>
+    </div>
+    <div class="neo-card-small mt-4 bg-white" style="border-width: 3px;">
+        <h3 class="border-b">⚠️ Aturan Pajak & Kebangkrutan</h3>
+        <p style="font-size:0.85rem; color:#444;">
+            - Corporate Tax: 10% dari Kas dipotong setiap akhir Tahun (M12/W4).<br>
+            - Jika Kas kamu Negatif (-₩) di akhir bulan, <strong>Staff akan Resign Massal & Trainee Kabur!</strong><br>
+            - Realisme: Jangan hamburkan uang untuk MV milyaran jika grup kamu masih Nugu!
+        </p>
+    </div>
+    <h3 class="section-title mt-4">Arus Kas Cepat</h3>
+    <ul id="finance-log" class="log-list neo-card mt-2"></ul>
+</div>
+<!-- TAB: AWARDS -->
+<div id="awards" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">🏆 Award Shows Akhir Tahun</h2>
+        <div class="neo-tag bg-yellow" style="font-size:0.9rem;">MAMA / KMA — Setiap Tahun M12 W4</div>
+    </div>
+    <div class="neo-card bg-blue mb-4" style="padding:20px;">
+        <h3 class="section-title">📊 Rekap Performa Tahun Ini</h3>
+        <div id="awards-yearly-stats" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-top:10px;">
+            <div class="neo-card-small bg-yellow"><b>Total Penjualan Album</b><br><span id="aw-total-sales" class="stat-number" style="font-size:1.5rem;">0</span></div>
+            <div class="neo-card-small bg-pink"><b>Skor Lagu Tertinggi</b><br><span id="aw-top-score" class="stat-number" style="font-size:1.5rem;">0</span></div>
+            <div class="neo-card-small bg-green"><b>Trofi Music Show</b><br><span id="aw-trophies" class="stat-number" style="font-size:1.5rem;">0</span></div>
+            <div class="neo-card-small bg-orange"><b>Waktu ke Ceremony</b><br><span id="aw-countdown" class="stat-number" style="font-size:1.2rem;">-</span></div>
+        </div>
+    </div>
+    <div class="neo-card bg-yellow mb-4" style="padding:20px;">
+        <h3 class="section-title">🏅 Riwayat Penghargaan Menang</h3>
+        <div id="awards-history-list"><p><i>Belum ada trofi award yang dimenangkan.</i></p></div>
+    </div>
+    <div class="neo-card bg-white" style="padding:20px;">
+        <h3 class="section-title">📜 Kategori Nominasi</h3>
+        <p style="font-size:0.85rem; color:#555;">• <b>Rookie of the Year (ROTY):</b> Grup yang debut tahun ini + Trofi tertinggi.<br>• <b>Song of the Year (SOTY):</b> Lagu dengan chart score tertinggi sepanjang tahun.<br>• <b>Artist of the Year (Daesang):</b> Perpaduan total penjualan album + trofi music show + reputasi agensi. Menang = status LEGENDARY + ₩10 Miliar.</p>
+    </div>
+</div>
+
+<!-- TAB: SUB-UNIT & SOLO -->
+<div id="subunit" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">🎭 Sub-Unit & Debut Solo Resmi</h2>
+    </div>
+    <div class="sub-tabs">
+        <button class="sub-tab-btn active" onclick="switchSubunitTab('su-form')">🧩 Bentuk Sub-Unit</button>
+        <button class="sub-tab-btn" onclick="switchSubunitTab('su-solo')">🎤 Debut Solo Resmi</button>
+        <button class="sub-tab-btn" onclick="switchSubunitTab('su-list')">📋 Daftar Sub-Unit & Solo</button>
+    </div>
+    <div id="tab-su-form" class="sub-tab-content active">
+        <div class="neo-panel p-4" style="padding:20px;">
+            <h3 class="section-title">Bentuk Sub-Unit Baru</h3>
+            <p style="font-size:0.9rem; color:#555; margin-bottom:15px;">Pilih grup induk lalu pilih 2-4 member untuk membentuk Sub-Unit. Sub-Unit bisa comeback saat grup utama sedang hiatus.</p>
+            <div class="input-group"><label>Pilih Grup Induk:</label><select id="su-parent-group" class="neo-input" onchange="loadSubunitMembers()"></select></div>
+            <div class="input-group"><label>Nama Sub-Unit:</label><input type="text" id="su-unit-name" class="neo-input" placeholder="Cth: EXO-CBX, Seventeen BSS"></div>
+            <div class="input-group"><label>Konsep Sub-Unit:</label>
+                <select id="su-concept" class="neo-input">
+                    <option value="Girl Crush">Girl Crush</option><option value="Hip-Hop">Hip-Hop</option><option value="Dreamy">Dreamy</option>
+                    <option value="R&B">R&B</option><option value="Refreshing">Refreshing</option><option value="Y2K">Y2K</option>
+                    <option value="Dark Academia">Dark Academia</option><option value="Cyberpunk">Cyberpunk</option>
+                </select>
+            </div>
+            <h4 class="mt-3 mb-2">Pilih Member (2-4 orang):</h4>
+            <div id="su-member-select" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;"></div>
+            <button class="neo-btn success-btn w-100 mt-4" onclick="formSubUnit()">✅ BENTUK SUB-UNIT (₩50 Jt)</button>
+        </div>
+    </div>
+    <div id="tab-su-solo" class="sub-tab-content">
+        <div class="neo-panel p-4" style="padding:20px;">
+            <h3 class="section-title">Produksi Debut Solo Resmi</h3>
+            <p style="font-size:0.9rem; color:#555; margin-bottom:15px;">Berbeda dari aktivitas solo sampingan — ini adalah debut resmi dengan album dan MV sendiri.</p>
+            <div class="input-group"><label>Pilih Grup:</label><select id="solo-parent-group" class="neo-input" onchange="loadSoloMembers()"></select></div>
+            <div class="input-group"><label>Pilih Member:</label><select id="solo-member-select" class="neo-input"></select></div>
+            <div class="input-group"><label>Nama Album Solo:</label><input type="text" id="solo-album-name" class="neo-input" placeholder="Cth: FEARLESS, LALISA"></div>
+            <div class="input-group"><label>Format Rilis:</label>
+                <select id="solo-format" class="neo-input">
+                    <option value="Mini">Mini Album (₩100Jt)</option>
+                    <option value="Full">Full Album Solo (₩300Jt)</option>
+                    <option value="Digital">Digital Single (₩20Jt)</option>
+                </select>
+            </div>
+            <div class="input-group"><label>Kualitas MV:</label>
+                <select id="solo-mv" class="neo-input">
+                    <option value="none">Tidak ada MV (Hemat)</option>
+                    <option value="standard">Standard MV (₩50Jt)</option>
+                    <option value="high">High Budget MV (₩150Jt)</option>
+                </select>
+            </div>
+            <button class="neo-btn action-btn w-100 mt-4" onclick="launchOfficialSolo()">🚀 MULAI PRODUKSI SOLO RESMI</button>
+        </div>
+    </div>
+    <div id="tab-su-list" class="sub-tab-content">
+        <div class="neo-panel p-4" style="padding:20px;">
+            <h3 class="section-title">Daftar Sub-Unit & Solo Aktif</h3>
+            <div id="su-active-list"><p><i>Belum ada sub-unit atau solo resmi yang terdaftar.</i></p></div>
+        </div>
+    </div>
+</div>
+
+<!-- TAB: VARIETY SHOW -->
+<div id="variety" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">📺 Variety Show</h2>
+        <div style="display:flex; gap:10px;">
+            <button class="neo-btn action-btn" onclick="openVarietyBooking()">📺 BOOKING ACARA</button>
+            <button class="neo-btn primary-btn" onclick="openModal('modal-fansign')">🎫 FANSIGN EVENT</button>
+        </div>
+    </div>
+    <p style="font-size:0.85rem; margin-bottom:15px; color:#555;">Kirim idol ke acara variety untuk menaikkan popularitas, fans, dan pendapatan. Setiap acara punya syarat dan efek unik.</p>
+    
+    <!-- Brand Reputation Index -->
+    <div class="brand-rep-board" id="brand-rep-board">
+        <div class="brand-rep-title">📊 BRAND REPUTATION INDEX — Bulan Ini</div>
+        <div class="brand-rep-list" id="brand-rep-list"></div>
+    </div>
+
+    <h3 class="section-title">📋 Riwayat Penampilan Variety</h3>
+    <ul id="variety-log" class="log-list neo-card bg-main" style="max-height:200px;"></ul>
+</div>
+
+<!-- TAB: COLLABORATION -->
+<div id="collab" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">🤝 Kolaborasi</h2>
+        <button class="neo-btn success-btn" onclick="openCollabModal()">🤝 MULAI KOLABORASI BARU</button>
+    </div>
+    <p style="font-size:0.85rem; margin-bottom:15px; color:#555;">Kolaborasi dengan artis lain untuk saling meningkatkan popularitas. Collab dengan artis Legend = biaya sangat mahal tapi exposure luar biasa.</p>
+    
+    <h3 class="section-title">📋 Riwayat Kolaborasi</h3>
+    <div id="collab-history-list"><p><i>Belum ada riwayat kolaborasi.</i></p></div>
+</div>
+
+<!-- TAB: INTERNATIONAL MARKET -->
+<div id="international" class="tab-content">
+    <div class="header-with-action">
+        <h2 class="page-title neo-text-shadow">🌏 Pasar Internasional</h2>
+        <button class="neo-btn primary-btn" onclick="openIntlMarketModal()">🌍 EKSPANSI PASAR</button>
+    </div>
+    
+    <!-- Season Indicator -->
+    <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
+        <div class="season-indicator" id="season-display">🌸 Musim Semi</div>
+        <div class="neo-tag bg-yellow" id="competition-level">Kompetisi: Rendah</div>
+    </div>
+
+    <p style="font-size:0.85rem; margin-bottom:15px; color:#555;">Investasi ke pasar luar negeri. Setiap negara butuh strategi spesifik — Jepang butuh single Jepang, US butuh English single, dll.</p>
+
+    <div id="intl-overview-grid" class="intl-market-grid"></div>
+    
+    <h3 class="section-title mt-4">📋 Aktivitas Internasional</h3>
+    <ul id="intl-log" class="log-list neo-card bg-main" style="max-height:200px;"></ul>
+</div>
+
+</main>
+
+</div>
+
+<!-- ==================== ANIMATION SCREEN (MV) ==================== -->
+
+<div id="mv-anim-screen">
+    <div class="mv-text-flash" id="mv-anim-title">COMEBACK STAGE</div>
+    <p style="font-size:1.5rem; margin-top:20px; font-weight:700;" id="mv-anim-artist">Artist Name - Song Name</p>
+    <div class="mv-bars">
+        <div class="mv-bar" style="animation-delay: 0.1s"></div><div class="mv-bar" style="animation-delay: 0.2s"></div><div class="mv-bar" style="animation-delay: 0.3s"></div><div class="mv-bar" style="animation-delay: 0.1s"></div><div class="mv-bar" style="animation-delay: 0.4s"></div>
+    </div>
+</div>
+
+<!-- ==================== ANIMATION SCREEN (MUSIC SHOW STAGE) ==================== -->
+
+<div id="music-show-stage-anim">
+    <div class="stage-lighting"></div>
+    <div class="stage-title" id="stage-song-title">🎶 ARTIST - SONG 🎶</div>
+    <div class="stage-group-wrap" id="stage-group-wrap">
+        <!-- Idols injected by JS -->
+    </div>
+    <div class="stage-floor"></div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Modal Tugas Rilis (Minigame Ekstensif) -->
+
+<div id="modal-release-tasks" class="modal-overlay">
+    <div class="neo-modal modal-xl">
+        <h2 class="section-title text-center">TUGAS PRODUKSI KOMPREHENSIF</h2>
+        <p style="font-size:0.9rem; text-align:center; margin-bottom:15px; color:#555;">Sinergi konsep itu vital! Memilih style hip-hop untuk konsep Fairy/Dreamy akan menyebabkan FLOP besar!</p>
+
+    <div class="neo-card-small bg-blue mb-2" style="text-align:center;">
+        <strong>Konsep Utama Album Ini:</strong> <span id="display-task-concept" class="neo-tag bg-yellow">Membaca...</span>
+    </div>
+
+    <div class="task-list-ui" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+        <div class="task-item bg-white">
+            <h4>🎵 Produksi Lagu (Beat & Lirik)</h4>
+            <select id="task-music" class="neo-input mt-2">
+                <option value="famous">⭐ Sewa Hit-Maker Teddy/Kenzie (₩300Jt, Jaminan Chart)</option>
+                <option value="retro_prod">🎷 Retro/City Pop Specialist (₩120Jt, Retro sinergi)</option>
+                <option value="trendy_edm">🎹 Sewa DJ EDM/House (₩100Jt, Y2K/GC)</option>
+                <option value="acoustic">🎸 Fokus Akustik/Band (₩80Jt, Refreshing/R&B)</option>
+                <option value="collab_prod">🤝 Co-Production Indie (₩60Jt, Unique Sound)</option>
+                <option value="bought">📦 Beli Demotape Luar (₩50Jt, Aman generik)</option>
+                <option value="self_composed">✍️ Self-Composed Member (Gratis, Skill dependent)</option>
+                <option value="inhouse">🏠 In-house Producer (Gratis, Resiko Flop)</option>
+            </select>
+        </div>
+        <div class="task-item bg-white">
+            <h4>🕺 Koreografi & Stage</h4>
+            <select id="task-choreo" class="neo-input mt-2">
+                <option value="precision_military">🎖️ Precision Military Sync (₩120Jt, 7+ member)</option>
+                <option value="studio1m">💫 Sewa 1Million/Jam Republic (₩100Jt, Dance bonus)</option>
+                <option value="theatrical">🎭 Theatrical/Musical (₩80Jt, Stage Presence bonus)</option>
+                <option value="freestyle_battle">🎲 Freestyle Battle Section (₩50Jt, Charisma)</option>
+                <option value="hard">💥 Hardcore Sync Formation (Gratis, Dance > 70)</option>
+                <option value="trendy">📱 Trendy TikTok Challenge (Gratis, Aman)</option>
+                <option value="vocal">🎤 Minimalis Fokus Vokal (Gratis, Vocal > 75)</option>
+            </select>
+        </div>
+        <div class="task-item bg-white">
+            <h4>👗 Outfit & Styling MV</h4>
+            <select id="task-outfit" class="neo-input mt-2">
+                <option value="luxury">💎 Full Luxury Brand (₩200Jt, Viral Pann/Insta)</option>
+                <option value="hanbok_modern">🏯 Modern Hanbok Fusion (₩100Jt, Traditional/GP)</option>
+                <option value="techwear">🤖 Futuristic Techwear (₩90Jt, Cyberpunk sinergi)</option>
+                <option value="y2k_street">🛹 Y2K / Streetwear (₩80Jt, Hip-Hop/Y2K)</option>
+                <option value="fairy_gown">👗 Gown / Elegant (₩80Jt, Dreamy/Dark Academia)</option>
+                <option value="custom">✂️ Custom Desainer (₩50Jt, Bonus Visual)</option>
+                <option value="school_uniform">🏫 School Uniform Custom (₩40Jt, Teen/Refreshing)</option>
+                <option value="sponsor">🏷️ Sponsor Brand Biasa (Gratis, Standar)</option>
+            </select>
+        </div>
+        <div class="task-item bg-white">
+            <h4>📺 Strategi Marketing</h4>
+            <select id="task-promo" class="neo-input mt-2">
+                <option value="viral">🔥 Viral TikTok/Influencer (₩150Jt, Global/Spotify)</option>
+                <option value="street_promo">🚛 Billboard & Truk Iklan Seoul (₩100Jt, Domestik)</option>
+                <option value="ads">📺 YouTube/IG Ads Intensif (₩80Jt, Boost Views)</option>
+                <option value="subway_ad">🚇 Subway Ad Campaign (₩70Jt, Commuter GP)</option>
+                <option value="fan_event">🎫 Pre-Release Fan Event (₩60Jt, Core Fans hype)</option>
+                <option value="media_play">📰 Media Play/Interview (₩50Jt, GP awareness)</option>
+                <option value="standard">📱 Posting Biasa Resmi (Gratis)</option>
+            </select>
+        </div>
+    </div>
+    <div style="margin-top:20px; font-size:0.8rem; font-weight:700; color:#555; text-align:center;">Total biaya tambahan akan dihitung saat ditekan Simpan. Pastikan Kas cukup!</div>
+    <div style="display:flex; gap:10px;" class="mt-2">
+        <button class="neo-btn success-btn w-100" onclick="saveReleaseTasks()">✅ BAYAR & SELESAIKAN TUGAS</button>
+        <button class="neo-btn danger-btn w-100" onclick="closeModal('modal-release-tasks')">TUTUP SEMENTARA</button>
+    </div>
+</div>
+
+</div>
+
+<!-- Modal Release Stats (Post MV) -->
+
+<div id="modal-release-stats" class="modal-overlay" style="z-index: 2001;">
+    <div class="neo-modal modal-large" style="background:linear-gradient(180deg,#0f172a,#1e293b); color:#fff; border-color:var(--c-yellow-solid); animation:releaseStatsEntry 0.6s cubic-bezier(0.34,1.56,0.64,1);">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:2.5rem; animation:vinylSpin 3s linear infinite;">💿</div>
+            <h2 style="font-size:2rem; font-weight:900; color:#fbbf24; text-shadow:2px 2px 0 #000; margin:10px 0;">📊 DATA PERILISAN</h2>
+            <h3 id="stat-song-title" style="font-size:1.8rem; font-weight:900; color:#fff;">"Lagu"</h3>
+            <p id="stat-artist-name" style="font-size:1.1rem; font-weight:700; color:#94a3b8;">Artis</p>
+            <div class="neo-tag mt-2" id="stat-album-type" style="background:#fbbf24; color:#000;">Tipe Album</div>
+        </div>
+
+        <div id="flop-warning" class="neo-banner hidden" style="background:#ef4444; color:white; text-align:center; border-color:#991b1b; animation:shakeFlop 0.5s ease-in-out;">
+            🚨 DISASTER FLOP! Sinergi konsep hancur atau agensi terlalu nugu. Gagal total di pasaran!
+        </div>
+
+        <div class="stat-grid-modal" style="margin-top:15px;">
+            <div class="neo-card-small" style="background:rgba(234,179,8,0.15); border-color:#eab308;">
+                <h4 style="color:#eab308;">▶️ YouTube MV Views (24H)</h4>
+                <p id="stat-views" class="text-xl" style="color:#fff;">0</p>
+            </div>
+            <div class="neo-card-small" style="background:rgba(236,72,153,0.15); border-color:#ec4899;">
+                <h4 style="color:#ec4899;">💽 1st Week Physical Sales</h4>
+                <p id="stat-sales" class="text-xl" style="color:#fff;">0 Kopian</p>
+            </div>
+            <div class="neo-card-small" style="background:rgba(34,197,94,0.15); border-color:#22c55e;">
+                <h4 style="color:#22c55e;">🍈 Melon Daily Chart</h4>
+                <p id="stat-melon" class="text-xl" style="color:#fff;">#0</p>
+            </div>
+            <div class="neo-card-small" style="background:rgba(29,185,84,0.15); border-color:#1db954;">
+                <h4 style="color:#1db954;">🎧 Spotify Global Chart</h4>
+                <p id="stat-spotify" class="text-xl" style="color:#fff;">#0</p>
+            </div>
+        </div>
+
+        <div class="neo-card-small mt-4" style="border-color:#fbbf24; background:rgba(251,191,36,0.1);">
+            <h4 style="color:#fbbf24; border-bottom:1px solid #fbbf2450; padding-bottom:5px; margin-bottom:8px;">💰 Laporan Finansial Rilis</h4>
+            <div style="display:flex; justify-content:space-between; font-weight:700; margin-top:5px;">
+                <span style="color:#94a3b8;">Total Modal Produksi:</span> <span id="stat-cost" style="color:#ef4444;">-₩ 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:700; margin-top:5px;">
+                <span style="color:#94a3b8;">Proyeksi Pendapatan Awal:</span> <span id="stat-revenue" style="color:#22c55e;">+₩ 0</span>
+            </div>
+        </div>
+        
+        <button class="neo-btn w-100 mt-4" style="background:#fbbf24; font-size:1.1rem; font-weight:900;" onclick="closeModal('modal-release-stats'); checkNextPendingRelease();">📈 KEMBALI KE MANAJEMEN</button>
+    </div>
+</div>
+
+<div id="modal-dashboard-detail" class="modal-overlay"><div class="neo-modal modal-large"><h2 id="dash-modal-title" class="section-title">Data</h2><div id="dash-modal-content" class="modal-body-text" style="font-size:1rem; line-height:1.6; max-height:400px; overflow-y:auto; background:#f0f4f8; padding:15px; border-radius:8px; border:2px solid #111;"></div><button class="neo-btn danger-btn mt-4 w-100" onclick="closeModal('modal-dashboard-detail')">TUTUP</button></div></div>
+<div id="modal-finance-detail" class="modal-overlay"><div class="neo-modal modal-large"><h2 class="section-title">📊 Rincian Arus Kas</h2><div class="finance-grid"><div class="neo-card-small bg-green"><h4>Pemasukan All-Time</h4><p id="det-income" class="text-xl">₩ 0</p></div><div class="neo-card-small bg-pink"><h4>Pengeluaran All-Time</h4><p id="det-expense" class="text-xl">₩ 0</p></div></div><ul id="det-finance-list" class="log-list bg-main mt-4" style="border: 2px solid #111; max-height:300px;"></ul><button class="neo-btn danger-btn w-100 mt-4" onclick="closeModal('modal-finance-detail')">TUTUP</button></div></div>
+
+<div id="modal-artist-detail" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;"><div style="flex-grow:1;"><h2 id="art-name" class="page-title m-0" style="border:none;">Artis</h2><br><span id="art-concept" class="neo-tag bg-pink mt-2">Konsep</span><span id="art-status-tag" class="neo-tag bg-yellow mt-2">Status: Free</span><span id="art-predebut-tag" class="neo-tag bg-orange mt-2 hidden">🌟 PRE-DEBUT</span></div><button class="neo-btn success-btn" id="btn-art-comeback" onclick="startComeback()">🔥 COMEBACK</button>
+                <button class="neo-btn bg-orange" id="btn-pr-action" onclick="openPRActionModal()" style="font-size:0.8rem;">🛡️ PR</button></div>
+        <div class="finance-grid mt-4"><div class="neo-card-small bg-blue"><h4>🇰🇷 Fans KR (Core)</h4><p id="art-fans-kr" class="text-xl">0</p></div><div class="neo-card-small bg-green"><h4>🌍 Fans Global</h4><p id="art-fans-gl" class="text-xl">0</p></div><div class="neo-card-small bg-yellow"><h4>🏆 Tropi Show</h4><p id="art-trophies" class="text-xl">0</p></div></div>
+        <div class="neo-card-small mt-2" style="border-width:2px;background:#fff;">
+            <div style="display:flex;justify-content:space-between;"><strong>📊 Public Sentiment:</strong><span id="art-sentiment-label" style="font-weight:700;">Positif</span></div>
+            <div class="neo-progress mt-2"><div id="art-sentiment-bar" class="fill bg-green" style="width:80%;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#999;"><span>Negatif</span><span>Positif</span></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:0.8rem;"><strong>Skandal Level:</strong><span id="art-scandal-level" style="font-weight:900;color:var(--c-red-solid);">0/10</span></div>
+        </div>
+        <div class="neo-card-small mt-2" style="border-width:2px; background:#fff;"><div style="display:flex; justify-content:space-between;"><strong>Tingkat Stress Grup:</strong><span id="art-stress-val">0%</span></div><div class="neo-progress mt-2"><div id="art-stress-bar" class="fill bg-blue"></div></div><p style="font-size:0.75rem; color:#666; margin-top:5px;">Stress 100% memicu Hiatus Paksa dan Peluang CEDERA PERMANEN!</p></div>
+        <div class="input-group mt-4">
+            <label>Jadwal Auto-Pilot (Jika tidak ada Manual Event):</label>
+            <select id="art-schedule-select" class="neo-input" onchange="changeAutoSchedule()">
+                <option value="promo">📢 Promosi Rutin (+Fans Sedikit, +Uang Dikit, +Stress 2%)</option>
+                <option value="practice">🏃 Latihan Keras (+Stat Naik, -Fans, +Stress 5%)</option>
+                <option value="rest">🛌 Istirahat Total (-Stress 30%, Bebas Skandal)</option>
+                <option value="live">📱 Weverse Live (+Fans GL, Stress Rendah)</option>
+                <option value="festival">🎸 Festival Kampus (+Uang Lumayan, +Fans KR, +Stress 8%)</option>
+                <option value="cf">📸 Syuting Iklan/CF (Syarat: Rep > 1500. Uang Besar, Stress 10%)</option>
+            </select>
+        </div>
+        <h3 class="mt-4 border-b">Member & Posisi (Klik Info)</h3><div id="art-members" style="font-size:0.9rem; margin-bottom:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+        <h3 class="border-b">Diskografi & Album Covers</h3><p id="art-discography" style="font-size:0.9rem;"></p><div id="art-disco-gallery" class="discography-gallery"></div><button class="neo-btn danger-btn w-100 mt-4" onclick="closeModal('modal-artist-detail')">TUTUP PROFIL GRUP</button>
+    </div>
+</div>
+
+<div id="modal-member-detail" class="modal-overlay" style="z-index: 1001;">
+    <div class="neo-modal bg-main">
+        <div style="text-align:center; margin-bottom:15px;"><div class="t-avatar-box bg-purple" style="margin: 0 auto 10px; width:80px; height:80px; font-size:2.5rem;" id="ind-avatar">👤</div><h2 id="ind-name" class="m-0" style="font-size:2rem; font-weight:900;">Nama Member</h2><div id="ind-pos" class="neo-tag mt-2">Posisi</div></div>
+        <div class="neo-card-small bg-yellow mt-2"><p><strong>Latar Belakang:</strong> <span id="ind-bg">...</span></p><p><strong>Sifat (Trait):</strong> <span id="ind-trait">...</span></p></div>
+        <div class="finance-grid mt-2"><div class="neo-card-small bg-white"><h4>Fans Individu</h4><p id="ind-fans" class="text-xl">0</p></div><div class="neo-card-small bg-white"><h4>Status</h4><p id="ind-status" style="font-weight:900;">Free</p></div></div>
+        <div class="stat-bars mt-4"><div class="stat-row"><span>🎤 Voc</span><div class="neo-progress"><div id="ind-bar-vocal" class="fill bg-pink"></div></div></div><div class="stat-row"><span>🕺 Dan</span><div class="neo-progress"><div id="ind-bar-dance" class="fill bg-blue"></div></div></div><div class="stat-row"><span>✨ Rap</span><div class="neo-progress"><div id="ind-bar-rap" class="fill bg-yellow"></div></div></div><div class="stat-row"><span>🌟 Vis</span><div class="neo-progress"><div id="ind-bar-visual" class="fill bg-green"></div></div></div><div class="stat-row"><span>🔥 Stage</span><div class="neo-progress"><div id="ind-bar-stage" class="fill bg-purple"></div></div></div></div>
+        <h3 class="mt-4 border-b">Beri Solo Project (+Stress Grup)</h3>
+        <div style="display:grid; grid-template-columns: 1fr; gap:5px;">
+            <button class="neo-btn action-btn w-100" id="btn-solo-drama" onclick="startSoloProject('drama')">🎬 Main K-Drama (3 Mgg | ₩20Jt)</button>
+            <button class="neo-btn primary-btn w-100" id="btn-solo-mc" onclick="startSoloProject('mc')">📺 MC Music Show (1 Mgg | ₩5Jt)</button>
+            <button class="neo-btn bg-purple w-100" id="btn-solo-debut" onclick="startSoloProject('solo_debut')">🎤 Rilis Lagu Solo (2 Mgg | ₩50Jt)</button>
+            <button class="neo-btn bg-orange w-100" id="btn-solo-ba" onclick="startSoloProject('ba')">💎 BA Luxury Brand (4 Mgg | ₩100Jt)</button>
+        </div>
+        <button class="neo-btn danger-btn w-100 mt-4" onclick="closeModal('modal-member-detail')">KEMBALI</button>
+    </div>
+</div>
+
+<!-- Music Show ADVANCED -->
+
+<div id="modal-music-show-adv" class="modal-overlay" style="z-index: 1050;">
+    <div class="neo-modal modal-xl bg-main">
+        <h2 class="page-title text-center w-100" style="background:#fff; padding:10px; border-radius:8px; border:4px solid var(--border-dark);">🏆 THE SHOWDOWN 🏆</h2>
+        <p class="text-center mb-2" style="font-weight:700;">Artismu masuk Nominasi Top 3 Music Show minggu ini!</p>
+        <div class="ms-nominee-grid" id="ms-nominees-container"></div>
+        <div class="neo-card mt-2">
+            <h3 class="text-center border-b">LIVE SCORING</h3>
+            <div class="score-row"><span style="color:#3b82f6;">DIGITAL</span><div class="score-bar-bg"><div class="score-bar-fill bg-blue" id="ms-bar-digi-0"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-blue" id="ms-bar-digi-1"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-blue" id="ms-bar-digi-2"></div></div></div>
+            <div class="score-row"><span style="color:#ec4899;">PHYSICAL</span><div class="score-bar-bg"><div class="score-bar-fill bg-pink" id="ms-bar-phys-0"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-pink" id="ms-bar-phys-1"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-pink" id="ms-bar-phys-2"></div></div></div>
+            <div class="score-row"><span style="color:#eab308;">BROADCAST</span><div class="score-bar-bg"><div class="score-bar-fill bg-yellow" id="ms-bar-brd-0"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-yellow" id="ms-bar-brd-1"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-yellow" id="ms-bar-brd-2"></div></div></div>
+            <div class="score-row"><span style="color:#22c55e;">VOTE</span><div class="score-bar-bg"><div class="score-bar-fill bg-green" id="ms-bar-vote-0"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-green" id="ms-bar-vote-1"></div></div><div class="score-bar-bg"><div class="score-bar-fill bg-green" id="ms-bar-vote-2"></div></div></div>
+        </div>
+        <div style="text-align:center;" class="mt-4"><button id="ms-btn-reveal" class="neo-btn action-btn w-100 text-xl" onclick="revealMusicShowWinner()">✨ KALKULASI SKOR ✨</button><button id="ms-btn-close" class="neo-btn danger-btn w-100 hidden mt-2" onclick="closeMusicShow()">LANJUTKAN SIMULASI</button></div>
+    </div>
+</div>
+
+<!-- Modal Debut & Comeback (Advanced) -->
+
+<div id="modal-debut-setup" class="modal-overlay">
+    <div class="neo-modal modal-xl">
+        <h2 id="debut-modal-title" class="page-title m-0">🔥 PEMBENTUKAN GRUP</h2>
+        <!-- Step 1 -->
+        <div id="debut-step-1" class="debut-step active mt-4">
+            <h3 class="section-title">1. Identitas & Target</h3>
+            <input type="text" id="debut-name" class="neo-input mb-2" placeholder="Nama Grup/Solois">
+            <div class="input-group mt-2"><label>Tipe Entitas:</label>
+                <select id="debut-type" class="neo-input">
+                    <option value="Girl Group">👧 Girl Group (Digital Tinggi, GP Suka)</option>
+                    <option value="Boy Group">👦 Boy Group (Fisik Tinggi, Fandom Kuat)</option>
+                    <option value="Co-Ed Group">🌈 Co-Ed Group (Campuran, Unik)</option>
+                    <option value="Soloist (Female)">🎤 Soloist Female</option>
+                    <option value="Soloist (Male)">🎤 Soloist Male</option>
+                    <option value="Band">🎸 Live Band (Fandom Loyal, Sulit Dance)</option>
+                </select>
+            </div>
+            <div class="input-group"><label>Konsep Grup / Album:</label>
+                <select id="debut-concept" class="neo-input">
+                    <option value="Girl Crush">Girl Crush (Global Aman, EDM/Hardcore)</option>
+                    <option value="Refreshing">Refreshing / School (Favorit Chart Domestik)</option>
+                    <option value="Y2K">Y2K Nostalgia (Trendy, Viral TikTok)</option>
+                    <option value="Teen Crush">Teen Crush (Fresh & Energetic)</option>
+                    <option value="Cyberpunk">Cyberpunk / AI (Mahal tapi Epik)</option>
+                    <option value="Dark Academia">Dark Academia / Lore (Sales Fisik Naik)</option>
+                    <option value="Hip-Hop">Hip-Hop / Swag (Kuat Spotify, Butuh Rapper)</option>
+                    <option value="R&B">R&B / Easy Listening (Digital Domestik, Butuh Vokal)</option>
+                    <option value="Dreamy">Dreamy / Fairy (Niche tapi Stabil)</option>
+                    <option value="Cute">Cute / Adorable (Fandom Setia, GP Mixed)</option>
+                    <option value="Elegant">Elegant / Classy (Brand Rep Tinggi)</option>
+                    <option value="Retro">Retro / City Pop (GP Suka, Nostalgia)</option>
+                    <option value="Ballad">Ballad (OST King, Butuh Vokal Dewa)</option>
+                    <option value="Ethereal">Ethereal / Mystical (Art + Niche)</option>
+                    <option value="Noir">Noir / Dark Concept (Edgy, Fandom Kuat)</option>
+                    <option value="Folklore/Traditional">Folklore / Traditional (GP Love, Unique)</option>
+                    <option value="Hyperpop">Hyperpop (Experimental, Viral Potential)</option>
+                    <option value="Performance">Performance / Synchronization (Dance King)</option>
+                </select>
+            </div>
+            <button class="neo-btn action-btn w-100 mt-4" onclick="nextDebutStep(2)">PILIH LINEUP MEMBER ➔</button><button class="neo-btn mt-2 w-100" onclick="closeModal('modal-debut-setup')">BATAL</button>
+        </div>
+        <!-- Step 2 -->
+        <div id="debut-step-2" class="debut-step mt-4">
+            <h3 class="section-title">2. Lineup & Posisi</h3>
+            <div id="debut-lineup-container" class="lineup-grid mt-2"></div>
+            <div style="display:flex; gap:10px;" class="mt-4"><button class="neo-btn w-100" onclick="nextDebutStep(1)">⬅ KEMBALI</button><button class="neo-btn action-btn w-100" onclick="nextDebutStep(3)">RILIS & STATUS ➔</button></div>
+        </div>
+        <!-- Step 3 -->
+        <div id="debut-step-3" class="debut-step mt-4">
+            <h3 class="section-title">3. Tipe Rilisan & Skala</h3>
+            <div class="input-group" id="group-status-wrap"><label>Status Awal Grup (Penting!):</label>
+                <select id="debut-is-predebut" class="neo-input" onchange="toggleReleaseInputs()">
+                    <option value="false">Official Debut (Langsung Siapkan Album Pertama)</option>
+                    <option value="true">Grup Pre-Debut (Masukkan ke Jadwal Manual, buat Hype dulu!)</option>
+                </select>
+            </div>
+            <div id="release-details-wrap">
+                <div class="input-group"><label>Format Rilisan Industri:</label>
+                    <select id="debut-album-type" class="neo-input">
+                        <option value="Full">💿 Full Album Studio (₩300Jt | 4 Mgg) — Fisik meledak, prestise.</option>
+                        <option value="Repackage">📀 Repackage Album (₩120Jt | 2 Mgg) — Jual fisik ulang.</option>
+                        <option value="Mini" selected>💽 Mini Album / EP (₩100Jt | 2 Mgg) — Standar industri.</option>
+                        <option value="Japanese">🇯🇵 Japanese Single (₩80Jt | 2 Mgg) — Royalti x3.</option>
+                        <option value="English">🇺🇸 English Single (₩50Jt | 2 Mgg) — Billboard target.</option>
+                        <option value="Pre-Release">🎯 Pre-Release Single (₩30Jt | 2 Mgg) — Hype builder.</option>
+                        <option value="Digital">📲 Digital Single (₩20Jt | 1 Mgg) — Hanya digital.</option>
+                        <option value="OST">🎬 OST K-Drama (₩10Jt | 1 Mgg) — GP recognition.</option>
+                    </select>
+                </div>
+                <input type="text" id="debut-album" class="neo-input mb-2" placeholder="Nama Album/Proyek">
+                <input type="text" id="debut-song" class="neo-input mb-2" placeholder="Judul Lagu Utama (Title Track)">
+                <div class="input-group mt-2" id="mv-quality-wrap"><label>Skala MV (Music Video):</label>
+                    <select id="debut-mv-quality" class="neo-input">
+                        <option value="blockbuster">🎬 Blockbuster Internasional (₩500Jt)</option>
+                        <option value="high">🌟 High-End Set / CGI (₩150Jt)</option>
+                        <option value="mid" selected>📹 Standar Industri (₩50Jt)</option>
+                        <option value="low">📷 Low Budget Performance (₩10Jt)</option>
+                        <option value="none">🔇 Tanpa MV (Hanya Audio)</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>Distribusi Layar (Center Push):</label><select id="debut-highlight" class="neo-input"><option value="none">Adil & Merata</option></select></div>
+            </div>
+            <!-- V11: Formation & Stylist buttons -->
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="neo-btn bg-purple w-100" onclick="openChoreoMatrix()">🎭 FORMASI</button>
+                <button class="neo-btn bg-orange w-100" onclick="openStylistPalette()">👗 WARDROBE</button>
+                <button class="neo-btn primary-btn w-100" onclick="openStoryboardFromRelease()">🎬 STORYBOARD MV</button>
+                <button class="neo-btn success-btn w-100" onclick="openModal('modal-teaser-schedule')">📅 TEASER SCHEDULE</button>
+            </div>
+            <div id="formation-chosen-banner" class="neo-banner hidden bg-green mt-2" style="font-size:0.8rem;">✅ Formasi & gaya telah dipilih! Akan mempengaruhi hasil chart.</div>
+            <button class="neo-btn success-btn w-100 mt-4" id="btn-final-release" onclick="finalizeDebut()">🎬 MULAI PERSIAPAN!</button><button class="neo-btn w-100 mt-2" onclick="nextDebutStep(2)" id="btn-back-step-2">⬅ KEMBALI</button><button class="neo-btn danger-btn w-100 mt-2 hidden" id="btn-cancel-comeback" onclick="closeModal('modal-debut-setup')">BATAL COMEBACK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modals Audisi & Scouting -->
+
+<div id="modal-audition-types" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title">Pilih Skala Audisi</h2>
+        <p style="font-size:0.85rem; color:#555; margin-bottom:15px;">Semakin mahal audisi, semakin banyak dan berkualitas kandidat trainee yang datang.</p>
+        <div class="audition-options" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="neo-card-small clickable bg-green" onclick="startAudition('street')"><h4>🚶 Street Casting</h4><p style="font-size:0.8rem;">₩5Jt | 1 Mgg | 4 kandidat<br><small>Cari di jalanan. Murah tapi kualitas random.</small></p></div>
+            <div class="neo-card-small clickable bg-blue" onclick="startAudition('online')"><h4>📱 Audisi Online</h4><p style="font-size:0.8rem;">₩30Jt | 1 Mgg | 7 kandidat<br><small>Video submission dari seluruh dunia. Banyak tapi campur.</small></p></div>
+            <div class="neo-card-small clickable bg-yellow" onclick="startAudition('national')"><h4>🇰🇷 National Audition</h4><p style="font-size:0.8rem;">₩50Jt | 2 Mgg | 6 kandidat<br><small>Audisi resmi nasional. Kualitas medium-high.</small></p></div>
+            <div class="neo-card-small clickable bg-orange" onclick="startAudition('university')"><h4>🎓 Audisi Kampus Seni</h4><p style="font-size:0.8rem;">₩80Jt | 2 Mgg | 5 kandidat<br><small>Rekrut dari SOPA, Seoul Arts, Hanyang. Skill terjamin.</small></p></div>
+            <div class="neo-card-small clickable bg-purple" onclick="startAudition('idol_reboot')"><h4>♻️ Idol Reboot</h4><p style="font-size:0.8rem;">₩100Jt | 2 Mgg | 3 kandidat<br><small>Ex-idol dari grup bubar. Berpengalaman.</small></p></div>
+            <div class="neo-card-small clickable bg-pink" onclick="startAudition('global')"><h4>🌍 Global Audition</h4><p style="font-size:0.8rem;">₩150Jt | 3 Mgg | 9 kandidat<br><small>Audisi internasional. Banyak foreign trainee.</small></p></div>
+            <div class="neo-card-small clickable" style="background:#fecaca;" onclick="startAudition('private')"><h4>🤫 Private Invitation</h4><p style="font-size:0.8rem;">₩200Jt | 3 Mgg | 3 kandidat<br><small>Undang trainee spesifik dari rival agency. Top quality.</small></p></div>
+        </div>
+        <button class="neo-btn mt-4 w-100" onclick="closeModal('modal-audition-types')">BATAL</button>
+    </div>
+</div>
+
+<!-- NEW MODAL: SCOUTING IDOL SPESIFIK -->
+
+<div id="modal-scout-idol" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title">🕵️ Scouting Trainee Spesifik</h2>
+        <p style="font-size:0.9rem; margin-bottom:15px;">Kirim agen Headhunter untuk mencari trainee dengan spesifikasi tertentu secara pasti. Biaya mahal dan makan waktu 4 minggu.</p>
+        <div class="input-group">
+            <label>Gender:</label>
+            <select id="scout-gender" class="neo-input"><option value="Male">Laki-Laki (Boy Group Target)</option><option value="Female">Perempuan (Girl Group Target)</option></select>
+        </div>
+        <div class="input-group">
+            <label>Target Bakat / Posisi:</label>
+            <select id="scout-focus" class="neo-input">
+                <option value="vocal">Vocalist Jenius (Fokus Suara) - ₩ 200 Jt</option>
+                <option value="dance">Dance Machine (Fokus Koreo) - ₩ 150 Jt</option>
+                <option value="visual">Visual / Center Material - ₩ 300 Jt</option>
+                <option value="rap">Underground Rapper - ₩ 100 Jt</option>
+            </select>
+        </div>
+        <button class="neo-btn success-btn w-100 mt-4" onclick="startScouting()">MULAI SCOUTING</button>
+        <button class="neo-btn danger-btn mt-2 w-100" onclick="closeModal('modal-scout-idol')">BATAL</button>
+    </div>
+</div>
+
+<div id="modal-candidates" class="modal-overlay">
+    <div class="neo-modal modal-xl"><h2 class="section-title">🎉 Kandidat Trainee</h2><div id="candidate-list" class="candidate-grid"></div><button id="btn-recruit-selected" class="neo-btn success-btn mt-4 w-100">REKRUT KE ASRAMA</button></div>
+</div>
+<div id="modal-trainee-detail" class="modal-overlay">
+    <div class="neo-modal">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;"><h2 id="detail-t-name" class="page-title m-0" style="border:none;">Nama</h2><span id="detail-t-gender" class="neo-tag">Gender</span></div>
+        <div class="neo-card-small mt-2 bg-yellow"><p><strong>Background:</strong> <span id="detail-t-bg">...</span></p><p><strong>Sifat:</strong> <span id="detail-t-trait">...</span></p></div>
+        <div class="stat-bars mt-4"><div class="stat-row"><span>🎤 Voc (<span id="detail-t-vocal-val">0</span>)</span><div class="neo-progress"><div id="bar-vocal" class="fill bg-pink"></div></div></div><div class="stat-row"><span>🕺 Dan (<span id="detail-t-dance-val">0</span>)</span><div class="neo-progress"><div id="bar-dance" class="fill bg-blue"></div></div></div><div class="stat-row"><span>✨ Rap (<span id="detail-t-rap-val">0</span>)</span><div class="neo-progress"><div id="bar-rap" class="fill bg-yellow"></div></div></div><div class="stat-row"><span>🌟 Vis (<span id="detail-t-visual-val">0</span>)</span><div class="neo-progress"><div id="bar-visual" class="fill bg-green"></div></div></div><div class="stat-row"><span>🔥 Stage (<span id="detail-t-stage-val">0</span>)</span><div class="neo-progress"><div id="bar-stage" class="fill bg-purple"></div></div></div></div>
+        <div class="focus-selector mt-4"><h3 class="border-b">Fokus Latihan Mingguan:</h3><div class="focus-buttons mt-2" style="display:flex; gap:5px; flex-wrap:wrap;"><button class="neo-btn btn-sm" id="focus-balanced" onclick="setFocus('balanced')">Balanced</button><button class="neo-btn btn-sm" id="focus-vocal" onclick="setFocus('vocal')">Vocal</button><button class="neo-btn btn-sm" id="focus-dance" onclick="setFocus('dance')">Dance</button><button class="neo-btn btn-sm" id="focus-rap" onclick="setFocus('rap')">Rap</button><button class="neo-btn btn-sm" id="focus-visual" onclick="setFocus('visual')">Visual</button></div></div>
+        <button class="neo-btn danger-btn mt-4 w-100" onclick="closeModal('modal-trainee-detail')">TUTUP</button>
+    </div>
+</div>
+
+<!-- Modal Cari Role Staff (Headhunter) -->
+
+<div id="modal-staff-search-role" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title">Cari Staff (Headhunter)</h2>
+        <p style="font-size:0.9rem; margin-bottom:15px;">Pilih divisi staff yang kamu butuhkan. Proses pencarian memakan waktu 1-2 minggu dan biaya operasional.</p>
+        <div class="input-group">
+            <label>Posisi / Role Staff:</label>
+            <select id="select-staff-role" class="neo-input">
+                <option value="Producer">🎵 Producer (Meningkatkan skor lagu & chart)</option>
+                <option value="Choreographer">🕺 Choreographer (Meningkatkan pertumbuhan stat Dance)</option>
+                <option value="Vocal Coach">🎤 Vocal Coach (Meningkatkan pertumbuhan stat Vocal)</option>
+                <option value="Manager">📋 Manager (Mengurangi stress idol secara pasif)</option>
+                <option value="PR Manager">📢 PR Manager (Menaikkan Reputasi & menangkal skandal)</option>
+                <option value="Lawyer">⚖️ Lawyer (Bisa menuntut hater gratis!)</option>
+                <option value="Bodyguard">🛡️ Bodyguard (Proteksi idol dari Sasaeng Fans)</option>
+            </select>
+        </div>
+        <button class="neo-btn success-btn w-100 mt-2" onclick="startStaffSearch()">MULAI PENCARIAN (₩ 20 Jt)</button>
+        <button class="neo-btn danger-btn mt-2 w-100" onclick="closeModal('modal-staff-search-role')">BATAL</button>
+    </div>
+</div>
+
+<!-- Modal Hasil Pencarian Staff -->
+
+<div id="modal-staff-recruit" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title">Kandidat Staff Terpilih</h2>
+        <p style="font-size:0.9rem; margin-bottom:10px;">Headhunter telah menemukan kandidat untuk posisi: <strong id="recruitment-role-name"></strong></p>
+        <div id="staff-candidate-list" class="candidate-grid mt-4"></div>
+        <button class="neo-btn mt-4 w-100" onclick="closeModal('modal-staff-recruit')">TUTUP / TOLAK SEMUA</button>
+    </div>
+</div>
+
+<!-- Modal Interactive Events -->
+
+<div id="modal-interactive-event" class="modal-overlay">
+    <div class="neo-modal">
+        <div class="event-img" id="event-icon">🚨</div>
+        <h2 class="section-title text-center" id="event-title">EVENT TITLE</h2>
+        <p class="event-desc" id="event-desc">Event description goes here...</p>
+        <div class="event-choices" id="event-choices-container">
+            <!-- Choices injected dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- ===== NEW v11 MODALS ===== -->
+
+<!-- Modal: Fandom Setup (Penamaan & Lightstick) -->
+
+<div id="modal-fandom-setup" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">🌟 EVENT: Pembentukan Fandom Resmi!</h2>
+        <p style="font-size:0.9rem; text-align:center; margin-bottom:10px;">Grup <strong id="fandom-group-name"></strong> sudah rilis album pertama! Saatnya meresmikan fandom.</p>
+        <div class="input-group"><label>Nama Fandom Resmi:</label><input type="text" id="fandom-name-input" class="neo-input" placeholder="Cth: ARMY, BLINK, MY" autocomplete="off"></div>
+        <div class="input-group"><label>Warna & Desain Lightstick:</label>
+            <select id="fandom-lightstick" class="neo-input">
+                <option value="standard">🕯️ Standar (₩20Jt produksi)</option>
+                <option value="premium">💡 Premium Limited Edition (₩60Jt, penjualan lebih tinggi)</option>
+                <option value="collectable">🌈 Collectible Set (₩120Jt, prestisius sekali)</option>
+            </select>
+        </div>
+        <p style="font-size:0.8rem; color:#555; margin-top:5px;">Lightstick menghasilkan passive income bulanan dari penjualan di toko online fandom.</p>
+        <button class="neo-btn success-btn w-100 mt-4" onclick="confirmFandomSetup()">✅ RESMIKAN FANDOM!</button>
+    </div>
+</div>
+
+<!-- Modal: Contract Negotiation (7-Year Curse) -->
+
+<div id="modal-contract-negotiation" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">⚠️ NEGOSIASI KONTRAK!</h2>
+        <div class="event-img">📜</div>
+        <p id="contract-nego-desc" style="text-align:center; font-size:0.9rem; margin: 10px 0;"></p>
+        <div id="contract-nego-choices" style="display:flex; flex-direction:column; gap:10px; margin-top:15px;"></div>
+    </div>
+</div>
+
+<!-- Modal: Cancel Culture / Kick Member -->
+
+<div id="modal-cancel-culture" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title text-center" style="color:var(--c-red-solid);">🚨 CANCEL CULTURE ALERT!</h2>
+        <p id="cancel-desc" style="text-align:center; font-size:0.9rem; margin:10px 0;"></p>
+        <p style="font-size:0.8rem; text-align:center; color:#777; margin-bottom:15px;">K-Netz menuntut tindakan! Pilih respon CEO:</p>
+        <div id="cancel-choices" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+</div>
+
+<!-- Modal: Concert Venue Selection (Tour Expansion) -->
+
+<div id="modal-concert-venue" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">🎪 BOOKING VENUE KONSER</h2>
+        <p style="font-size:0.9rem; text-align:center; margin-bottom:15px;">Pilih venue untuk <strong id="concert-group-name"></strong>. Pastikan fandom cukup besar!</p>
+        <div id="venue-options" style="display:grid; grid-template-columns:1fr 1fr; gap:15px;"></div>
+        <button class="neo-btn mt-4 w-100" onclick="closeModal('modal-concert-venue')">BATAL</button>
+    </div>
+</div>
+
+<!-- Modal: Award Show Ceremony -->
+
+<div id="modal-award-ceremony" class="modal-overlay">
+    <div class="neo-modal modal-large" style="background:linear-gradient(135deg,#0f172a,#1e293b); border-color:#fbbf24; box-shadow:0 0 60px rgba(251,191,36,0.3);">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:3rem; animation:trophyBounce 0.8s infinite alternate;">🏆</div>
+            <h2 class="section-title" style="color:#fbbf24; text-shadow:2px 2px 0 #000; border-color:#fbbf24;">MAMA / KMA CEREMONY</h2>
+            <p style="color:#94a3b8; font-size:0.85rem;">Tahun <span style="color:#fbbf24; font-weight:900;">Y<span id="award-year-display"></span></span> — Hasil penghargaan akhir tahun telah diumumkan!</p>
+        </div>
+        <div id="award-results-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div style="text-align:center; margin-top:15px;">
+            <div class="award-confetti-row" style="font-size:1.5rem; animation:confettiDrift 2s infinite alternate;">🎉✨🎊✨🎉</div>
+        </div>
+        <button class="neo-btn w-100 mt-4" style="background:#fbbf24; font-size:1.1rem;" onclick="closeModal('modal-award-ceremony'); updateUI();">🏆 TUTUP CEREMONY</button>
+    </div>
+</div>
+
+<!-- ===== V11.0 NEW MODALS ===== -->
+
+<!-- MODAL: CHOREO FORMATION MATRIX -->
+
+<div id="modal-choreo-matrix" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">🎭 FORMASI KOREOGRAFI</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:5px;">Susun posisi member di atas panggung. Center mendapat boost visual tapi stress naik lebih cepat!</p>
+        <div class="formation-preset-btns" style="justify-content:center;">
+            <button class="neo-btn btn-sm primary-btn" onclick="applyFormationPreset('V')">▽ V-Shape</button>
+            <button class="neo-btn btn-sm success-btn" onclick="applyFormationPreset('line')">━ Line</button>
+            <button class="neo-btn btn-sm bg-purple" onclick="applyFormationPreset('triangle')">△ Triangle</button>
+            <button class="neo-btn btn-sm bg-orange" onclick="applyFormationPreset('scatter')">✦ Scatter</button>
+        </div>
+        <p style="font-size:0.75rem; font-weight:700; text-align:center; color:#666;">Klik member dari pool di bawah, lalu klik sel grid untuk menempatkan.</p>
+        <div class="formation-matrix" id="choreo-matrix-grid"></div>
+        <p style="font-size:0.75rem; text-align:center; font-weight:700; margin-bottom:5px;">Pool Member (klik untuk pilih):</p>
+        <div class="formation-member-pool" id="choreo-member-pool"></div>
+        <div class="formation-sinergi" id="choreo-sinergi-info">📊 Sinergi formasi akan tampil di sini.</div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="neo-btn danger-btn w-100" onclick="closeModal('modal-choreo-matrix')">BATAL</button>
+            <button class="neo-btn success-btn w-100" onclick="confirmFormation()">✅ KONFIRMASI FORMASI</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: STYLIST & COLOR PALETTE -->
+
+<div id="modal-stylist-palette" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">👗 STYLIST & WARDROBE</h2>
+        <p style="font-size:0.85rem; color:#555; margin-bottom:10px;">Pilih palette warna utama dan aksesoris. Warna yang sama 3x berturut-turut akan memicu komentar K-Netz!</p>
+        <label style="font-weight:900; font-size:0.85rem;">PALETTE WARNA UTAMA:</label>
+        <div class="palette-grid" id="palette-grid-container"></div>
+        <label style="font-weight:900; font-size:0.85rem; margin-top:5px; display:block;">AKSESORIS / GAYA POIN:</label>
+        <div class="accessory-chips" id="accessory-chips-container"></div>
+        <div id="style-history-warn-el" class="style-history-warn hidden"></div>
+        <div id="palette-pixel-preview" style="text-align:center; margin:10px 0; padding:10px; background:var(--bg-main); border:2px solid var(--border-dark); border-radius:8px;">
+            <p style="font-size:0.75rem; font-weight:700;">Preview Pixel Idol:</p>
+            <div style="display:flex; gap:15px; justify-content:center; margin-top:8px;" id="palette-idol-preview-row"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="neo-btn danger-btn w-100" onclick="closeModal('modal-stylist-palette')">BATAL</button>
+            <button class="neo-btn success-btn w-100" onclick="confirmStylistPalette()">✅ TERAPKAN GAYA</button>
+        </div>
+    </div>
+</div>
+
+<!-- TRAINEE EVAL CINEMATIC SCREEN -->
+
+<div id="trainee-eval-screen">
+    <div class="eval-room">
+        <div class="eval-room-title">🎬 EVALUASI TRAINEE</div>
+        <div class="eval-room-sub" id="eval-room-sub">Ruang Latihan Agensi — Penilaian Akhir Tahun</div>
+        <div class="eval-progress-info" id="eval-progress-info">Trainee 1 / 3</div>
+        <div class="eval-trainee-display" id="eval-trainee-display"></div>
+        <div class="eval-name" id="eval-current-name">Nama Trainee</div>
+        <div class="eval-stat-bars">
+            <div class="eval-bar-row">
+                <div class="eval-bar-label">🎤 VOKAL</div>
+                <div class="eval-bar-bg"><div class="eval-bar-fill vocal" id="eval-bar-vocal" style="width:0%"></div></div>
+            </div>
+            <div class="eval-bar-row">
+                <div class="eval-bar-label">🕺 DANCE</div>
+                <div class="eval-bar-bg"><div class="eval-bar-fill dance" id="eval-bar-dance" style="width:0%"></div></div>
+            </div>
+        </div>
+        <div class="eval-actions">
+            <div class="eval-btn praise" onclick="evalDecision('praise')">✨ PUJI<br><small>+Semangat</small></div>
+            <div class="eval-btn critique" onclick="evalDecision('critique')">⚡ KRITIK TAJAM<br><small>+Progress</small></div>
+            <div class="eval-btn cut" onclick="evalDecision('cut')">✂️ KELUARKAN<br><small>Dari Agensi</small></div>
+        </div>
+    </div>
+</div>
+
+<!-- DAESANG CINEMATIC SCREEN -->
+
+<div id="daesang-cinematic">
+    <div class="daesang-spotlight"></div>
+    <div class="daesang-confetti" id="daesang-confetti-area"></div>
+    <div class="daesang-phase1" id="daesang-phase1">
+        <div class="daesang-label">DAESANG — ARTIST OF THE YEAR</div>
+        <div class="daesang-envelope-wrap" id="daesang-envelope" onclick="openDaesangEnvelope()">📩</div>
+        <p style="color:#fff; font-size:0.85rem; font-weight:700; margin-top:15px; animation:pulse 1.5s infinite alternate;">Klik amplop untuk membuka...</p>
+    </div>
+    <div class="daesang-phase2" id="daesang-phase2">
+        <div class="daesang-winner-reveal" id="daesang-winner-reveal">
+            <div class="daesang-label">PEMENANG DAESANG</div>
+            <div class="daesang-winner-text" id="daesang-winner-name">NAMA GRUP</div>
+            <div class="daesang-idol-row" id="daesang-idol-row">
+                <span class="daesang-crying-idol">😭</span>
+                <span class="daesang-crying-idol">🥺</span>
+                <span class="daesang-crying-idol">😭</span>
+            </div>
+            <p style="color:#fbbf24; font-weight:700; margin:10px 0;">Ucapan Pidato Kemenangan:</p>
+            <div class="daesang-speech-btns">
+                <button class="daesang-speech-btn" onclick="daesangSpeech('ceo')">🎤 Berterima kasih ke CEO & Tim</button>
+                <button class="daesang-speech-btn" onclick="daesangSpeech('fans')">💜 Fokus ke Fandom</button>
+                <button class="daesang-speech-btn" onclick="daesangSpeech('cry')">😭 Nangis terharu (tanpa kata)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: MV STORYBOARD DIRECTOR -->
+
+<div id="modal-storyboard" class="modal-overlay">
+    <div class="neo-modal modal-xl">
+        <h2 class="section-title text-center">🎬 MV STORYBOARD DIRECTOR</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:15px;">Racik visual MV yang sempurna! Sinergi lokasi + kamera + dance point menentukan viralitas.</p>
+        <div class="storyboard-container">
+            <div class="storyboard-choices">
+                <div class="input-group">
+                    <label>📍 Lokasi Syuting:</label>
+                    <select id="sb-location" class="neo-input" onchange="updateMoodboard()">
+                        <option value="rooftop">🏙️ Rooftop Gedung Seoul</option>
+                        <option value="school">🏫 Sekolah Terbengkalai</option>
+                        <option value="desert">🏜️ Gurun Pasir (Mojave)</option>
+                        <option value="neon">🌃 Gang Neon Hongdae</option>
+                        <option value="mansion">🏰 Mansion / Istana</option>
+                        <option value="forest">🌲 Hutan Magis</option>
+                        <option value="studio_white">⬜ Studio Putih Minimalis</option>
+                        <option value="underwater">🌊 Underwater CG (CGI)</option>
+                        <option value="beach">🏖️ Pantai / Beach</option>
+                        <option value="hanok">🏯 Hanok Tradisional Korea</option>
+                        <option value="warehouse">🏚️ Warehouse Terbengkalai</option>
+                        <option value="amusement">🎡 Taman Hiburan / Carnival</option>
+                        <option value="library">📚 Perpustakaan Klasik</option>
+                        <option value="spaceship">🚀 Spaceship / Futuristic Set</option>
+                        <option value="cafe">☕ Aesthetic Cafe</option>
+                        <option value="train">🚂 Kereta / Railway</option>
+                        <option value="stadium">🏟️ Stadium Megah</option>
+                        <option value="subway">🚇 Subway Underground</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>🎥 Tipe Kamera:</label>
+                    <select id="sb-camera" class="neo-input" onchange="updateMoodboard()">
+                        <option value="steady">📹 Steady Cam (Clean & Polished)</option>
+                        <option value="handheld">🤳 Handheld / Shaky (Raw & Edgy)</option>
+                        <option value="drone">🚁 Drone Shot (Epic & Cinematic)</option>
+                        <option value="oneclip">🔄 One-Take / Oner (Prestige)</option>
+                        <option value="mv_drama">🎭 Drama Narrative (Story-driven MV)</option>
+                        <option value="fisheye">👁️ Fisheye / Wide Angle (Distorted)</option>
+                        <option value="slow_motion">🐌 Slow Motion Artistic</option>
+                        <option value="vertical">📱 Vertical Mobile Format</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>💃 Point Dance / Kill Part:</label>
+                    <select id="sb-dance" class="neo-input" onchange="updateMoodboard()">
+                        <option value="viral_move">🔥 Iconic Hand Move (TikTok Bait)</option>
+                        <option value="wave">🌊 Body Wave Challenge</option>
+                        <option value="hip_thrust">💥 Power Move / Floorwork</option>
+                        <option value="finger_choreo">☝️ Finger Choreo (Minimalis)</option>
+                        <option value="group_sync">👯 Full Sync Formation (Avg Dance > 70)</option>
+                        <option value="floor_sync">🌀 Floor Sync / Ground Work</option>
+                        <option value="freestyle">🎲 Freestyle Section (Charisma)</option>
+                        <option value="killing_part">⚡ Killing Part Focus (Center Shine)</option>
+                        <option value="relay_dance">🔄 Relay Dance Moment</option>
+                        <option value="military_sync">🎖️ Military Precision Sync</option>
+                    </select>
+                </div>
+                <div id="sb-synergy-text" class="neo-card-small bg-yellow" style="font-size:0.8rem;">
+                    <b>Sinergi:</b> Pilih kombinasi untuk melihat efeknya...
+                </div>
+            </div>
+            <div class="storyboard-moodboard" id="sb-moodboard">
+                <div class="moodboard-polaroid" id="sb-polaroid-1"><div class="polaroid-img" style="background:#334155;">🏙️</div><div class="polaroid-label">Lokasi</div></div>
+                <div class="moodboard-polaroid" id="sb-polaroid-2"><div class="polaroid-img" style="background:#1e293b;">📹</div><div class="polaroid-label">Kamera</div></div>
+                <div class="moodboard-polaroid" id="sb-polaroid-3"><div class="polaroid-img" style="background:#0f172a;">💃</div><div class="polaroid-label">Point Dance</div></div>
+                <div class="moodboard-synergy" id="sb-moodboard-synergy" style="display:none;">Pilih semua elemen...</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="neo-btn danger-btn w-100" onclick="closeModal('modal-storyboard')">BATAL</button>
+            <button class="neo-btn success-btn w-100 big-action" onclick="confirmStoryboard()">🎬 KUNCI STORYBOARD</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: SURVIVAL SHOW -->
+
+<div id="modal-survival-show" class="modal-overlay">
+    <div class="neo-modal modal-xl" style="background:#0f0821; color:#fff;">
+        <h2 class="section-title text-center" style="color:var(--c-yellow); border-color:rgba(255,255,255,0.2);">🔥 PRODUCE: YOUR AGENCY 🔥</h2>
+        <div class="survival-week-info" id="survival-week-info">Minggu 1 / 8 — Rating TV: 0%</div>
+        <div class="survival-rating"><span class="rating-bar" id="survival-rating-bar">📺 Rating: 0.0%</span></div>
+        <div class="survival-pyramid" id="survival-pyramid">
+            <!-- Pyramid rendered by JS -->
+        </div>
+        <div id="survival-evil-target" style="text-align:center; margin:10px 0; font-size:0.85rem; display:none;">
+            <p style="color:var(--c-red-solid); font-weight:900;">Target Evil Edit:</p>
+            <select id="survival-evil-select" class="neo-input" style="max-width:300px; margin:5px auto;"></select>
+        </div>
+        <div class="survival-controls">
+            <button class="neo-btn action-btn" id="btn-survival-vote" onclick="survivalAdvanceWeek()">📊 Lanjut ke Voting</button>
+            <button class="neo-btn evil-edit-btn" id="btn-survival-evil" onclick="toggleEvilEdit()">😈 EVIL EDITING</button>
+            <button class="neo-btn danger-btn" id="btn-survival-end" onclick="endSurvivalShow()" style="display:none;">✅ FINALISASI DEBUT</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== V13 NEW MODALS ===== -->
+
+<!-- MODAL: Military Enlistment -->
+
+<div id="modal-military" class="modal-overlay">
+    <div class="neo-modal">
+        <div class="military-card">
+            <h2 style="color:#ffeaa7; font-size:1.5rem; margin-bottom:5px;">🎖️ WAJIB MILITER</h2>
+            <p style="color:#dfe6e9; font-size:0.85rem;" id="military-desc">Deskripsi...</p>
+        </div>
+        <div class="enlist-options" id="military-options"></div>
+        <button class="neo-btn danger-btn w-100 mt-4" onclick="closeModal('modal-military')">TUNDA (Resiko Skandal Publik!)</button>
+    </div>
+</div>
+
+<!-- MODAL: Variety Show Booking -->
+
+<div id="modal-variety" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">📺 BOOKING VARIETY SHOW</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:15px;">Pilih acara dan kirim member/grup. Setiap show punya syarat minimum dan efek berbeda!</p>
+        <div class="input-group"><label>Pilih Grup/Artis:</label><select id="variety-group-select" class="neo-input" onchange="loadVarietyOptions()"></select></div>
+        <div class="variety-grid" id="variety-show-grid"></div>
+        <button class="neo-btn mt-4 w-100" onclick="closeModal('modal-variety')">TUTUP</button>
+    </div>
+</div>
+
+<!-- MODAL: Collaboration -->
+
+<div id="modal-collab" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">🤝 KOLABORASI & FEATURING</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:10px;">Pilih grup/artis kamu, lalu pilih artis yang ingin diajak collab. Artis Legend = biaya mahal tapi boost luar biasa.</p>
+        <div class="input-group"><label>Artis Kamu:</label><select id="collab-my-artist" class="neo-input"></select></div>
+        <div class="input-group"><label>Tipe Kolaborasi:</label>
+            <select id="collab-type" class="neo-input">
+                <option value="feat">Featuring di Lagu (Muncul di chart bersama)</option>
+                <option value="joint">Joint Stage / Special Stage (Hype + Fans)</option>
+                <option value="western">Collab Artis Barat (Mahal! Billboard Boost)</option>
+            </select>
+        </div>
+        <h4 style="margin:10px 0 5px;">Pilih Partner Kolaborasi:</h4>
+        <div class="collab-artist-grid" id="collab-artist-grid"></div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="neo-btn success-btn w-100" onclick="executeCollab()">🤝 MULAI KOLABORASI</button>
+            <button class="neo-btn danger-btn w-100" onclick="closeModal('modal-collab')">BATAL</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: International Market -->
+
+<div id="modal-intl-market" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">🌏 EKSPANSI PASAR INTERNASIONAL</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:10px;">Investasi di pasar luar negeri. Setiap pasar butuh strategi berbeda!</p>
+        <div class="input-group"><label>Pilih Grup:</label><select id="intl-group-select" class="neo-input"></select></div>
+        <div class="intl-market-grid" id="intl-market-grid"></div>
+        <button class="neo-btn mt-4 w-100" onclick="closeModal('modal-intl-market')">TUTUP</button>
+    </div>
+</div>
+
+<!-- MODAL: Fansign Event -->
+
+<div id="modal-fansign" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">🎫 FANSIGN & PHOTOCARD EVENT</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:15px;">Adakan fansign untuk meningkatkan core fans dan loyalitas fandom.</p>
+        <div class="input-group"><label>Pilih Grup:</label><select id="fansign-group-select" class="neo-input"></select></div>
+        <div class="input-group"><label>Tipe Event:</label>
+            <select id="fansign-type" class="neo-input">
+                <option value="mini">Mini Fansign (50 fans, ₩10Jt) — Intimate, core fans +</option>
+                <option value="normal">Regular Fansign (200 fans, ₩30Jt) — Standard album purchase lottery</option>
+                <option value="video">Video Call Fansign (500 fans, ₩50Jt) — Global fans bisa ikut!</option>
+                <option value="special">Special Photocard Event (₩80Jt) — Limited PC, physical sales boost</option>
+            </select>
+        </div>
+        <button class="neo-btn success-btn w-100 mt-4" onclick="executeFansign()">🎫 ADAKAN EVENT</button>
+        <button class="neo-btn mt-2 w-100" onclick="closeModal('modal-fansign')">BATAL</button>
+    </div>
+</div>
+
+<!-- MODAL: Weekly Report -->
+
+<div id="modal-weekly-report" class="modal-overlay">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">📋 LAPORAN MINGGUAN</h2>
+        <div class="weekly-report-grid" id="weekly-report-content"></div>
+        <div id="weekly-report-events" class="mt-4"></div>
+        <button class="neo-btn action-btn w-100 mt-4" onclick="closeModal('modal-weekly-report')">LANJUTKAN</button>
+    </div>
+</div>
+
+<!-- MODAL: Comeback Teaser Schedule -->
+
+<div id="modal-teaser-schedule" class="modal-overlay">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">📅 TEASER SCHEDULE</h2>
+        <p style="font-size:0.85rem; color:#555; text-align:center; margin-bottom:10px;">Pilih strategi teaser sebelum comeback. Hype yang baik = chart lebih tinggi!</p>
+        <div class="input-group"><label>Durasi Pre-Release Hype:</label>
+            <select id="teaser-duration" class="neo-input">
+                <option value="1">1 Minggu — Quick Drop (Surprise!)</option>
+                <option value="2">2 Minggu — Standard Rollout</option>
+                <option value="3">3 Minggu — Full Campaign (Concept Photo + MV Teaser + Highlight Medley)</option>
+                <option value="4">4 Minggu — Grand Rollout (Trailer + Photo + Dance Practice Preview)</option>
+            </select>
+        </div>
+        <div class="input-group"><label>Konten Teaser:</label>
+            <select id="teaser-content" class="neo-input">
+                <option value="standard">Standar (Concept Photo + MV Teaser)</option>
+                <option value="mystery">Mystery/ARG (Teka-teki viral, resiko gagal)</option>
+                <option value="spoiler">Spoiler-Heavy (Fans tahu segalanya, hype turun tapi aman)</option>
+                <option value="cinematic">Cinematic Trailer (₩50Jt ekstra, YouTube views tinggi)</option>
+            </select>
+        </div>
+        <div class="teaser-timeline" id="teaser-timeline-preview">
+            <div class="teaser-dot pending">📸</div><div class="teaser-line"></div>
+            <div class="teaser-dot pending">🎬</div><div class="teaser-line"></div>
+            <div class="teaser-dot pending">🎵</div><div class="teaser-line"></div>
+            <div class="teaser-dot pending">💿</div>
+        </div>
+        <button class="neo-btn success-btn w-100 mt-2" onclick="confirmTeaserSchedule()">✅ KONFIRMASI JADWAL TEASER</button>
+        <button class="neo-btn mt-2 w-100" onclick="closeModal('modal-teaser-schedule')">LEWATI (Tanpa Teaser)</button>
+    </div>
+</div>
+
+
+<!-- V15.5 MODAL: Training Assignment -->
+<div id="modal-training-assign" class="modal-overlay" style="display:none;">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">📝 WEEKLY TRAINING ASSIGNMENT</h2>
+        <p style="font-size:0.85rem;color:#555;text-align:center;margin-bottom:15px;">Tentukan fokus setiap trainee minggu ini. Assignment berlaku hingga diubah.</p>
+        <div id="training-assign-list" style="max-height:400px;overflow-y:auto;"></div>
+        <button class="neo-btn success-btn w-100 mt-4" onclick="saveTrainingAssignments()">✅ SIMPAN</button>
+        <button class="neo-btn mt-2 w-100" onclick="closeModal('modal-training-assign')">BATAL</button>
+    </div>
+</div>
+
+<!-- V15.5 MODAL: Trainee Evaluation -->
+<div id="modal-trainee-eval" class="modal-overlay" style="display:none;z-index:1060;">
+    <div class="neo-modal modal-large">
+        <h2 class="section-title text-center">📊 EVALUASI TRAINEE BULANAN</h2>
+        <p style="font-size:0.85rem;color:#555;text-align:center;margin-bottom:10px;">Grade berdasarkan growth selama 4 minggu terakhir. Grade D 2x = Cut Notice!</p>
+        <div id="eval-trainee-list" style="max-height:400px;overflow-y:auto;"></div>
+        <button class="neo-btn action-btn w-100 mt-4" onclick="closeModal('modal-trainee-eval')">LANJUTKAN</button>
+    </div>
+</div>
+
+<!-- V15.5 MODAL: PR Action -->
+<div id="modal-pr-action" class="modal-overlay" style="display:none;z-index:1050;">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">🛡️ PR ACTION</h2>
+        <p style="font-size:0.85rem;color:#555;text-align:center;margin-bottom:10px;" id="pr-group-info">Grup: -</p>
+        <div id="pr-scandal-display" class="neo-card-small bg-white mb-4"></div>
+        <div id="pr-action-options" style="display:grid;gap:10px;"></div>
+        <button class="neo-btn mt-4 w-100" onclick="closeModal('modal-pr-action')">TUTUP</button>
+    </div>
+</div>
+
+<!-- V15.5 MODAL: Bonding Activity -->
+<div id="modal-bonding" class="modal-overlay" style="display:none;">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">💝 BONDING ACTIVITY</h2>
+        <p style="font-size:0.85rem;color:#555;text-align:center;margin-bottom:10px;">Kegiatan bersama meningkatkan chemistry antar member.</p>
+        <div class="input-group"><label>Pilih Grup:</label><select id="bonding-group-select" class="neo-input"></select></div>
+        <div class="input-group"><label>Aktivitas:</label>
+            <select id="bonding-activity" class="neo-input">
+                <option value="dinner">🍽️ Team Dinner (₩20Jt, Chemistry +10)</option>
+                <option value="trip">🏖️ Team Trip (₩50Jt, Chemistry +18, Stress -15)</option>
+                <option value="workshop">🎯 Team Workshop (₩80Jt, Chemistry +25, Stat Bonus)</option>
+            </select>
+        </div>
+        <button class="neo-btn success-btn w-100 mt-4" onclick="executeBonding()">💝 LAKUKAN</button>
+        <button class="neo-btn mt-2 w-100" onclick="closeModal('modal-bonding')">BATAL</button>
+    </div>
+</div>
+
+<!-- V15.5 MODAL: Staff Event -->
+<div id="modal-staff-event" class="modal-overlay" style="display:none;z-index:1060;">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">🏢 STAFF EVENT</h2>
+        <p id="staff-event-desc" style="font-size:0.9rem;text-align:center;margin-bottom:15px;"></p>
+        <div id="staff-event-options" style="display:grid;gap:10px;"></div>
+    </div>
+</div>
+
+<!-- V15.5 MODAL: Mid-Year Award -->
+<div id="modal-midyear-award" class="modal-overlay" style="display:none;z-index:1050;">
+    <div class="neo-modal modal-large" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;">
+        <h2 id="midyear-award-title" style="text-align:center;font-size:1.5rem;color:#fbbf24;">🏆 AWARD SHOW</h2>
+        <div id="midyear-voting-section" style="margin:15px 0;"></div>
+        <div id="midyear-results" style="max-height:350px;overflow-y:auto;"></div>
+        <button class="neo-btn w-100 mt-4" style="background:#fbbf24;color:#000;font-weight:900;" onclick="closeModal('modal-midyear-award')">LANJUTKAN</button>
+    </div>
+</div>
+
+<!-- V15.5 MODAL: Concert Review -->
+<div id="modal-concert-review" class="modal-overlay" style="display:none;z-index:1050;">
+    <div class="neo-modal">
+        <h2 class="section-title text-center">📝 CONCERT REVIEW</h2>
+        <div id="concert-review-content"></div>
+        <button class="neo-btn success-btn w-100 mt-4" onclick="closeModal('modal-concert-review')">LANJUTKAN</button>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
